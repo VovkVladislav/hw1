@@ -1,33 +1,27 @@
 Vagrant.configure("2") do |config|
+  config.vm.define "os1" do |os1|
+ 
 
-  config.vm.box = "centos/7"
+    os1.vm.box = "centos/7"
+    os1.vm.network "private_network", ip: "192.168.1.10"
 
-  config.vm.network "forwarded_port", guest: 80, host: 8080
+    os1.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--name", "os1"]
+    end
+  end
+  config.vm.define "os2" do |os2|
 
-  # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
 
-  # config.vm.network "private_network", ip: "192.168.33.10"
+    os2.vm.box = "centos/7"
+    os2.vm.network "private_network", ip: "192.168.1.11"
 
-  # config.vm.network "public_network"
-
-  # config.vm.synced_folder "../data", "/vagrant_data"
-
-  #
-  # config.vm.provider "virtualbox" do |vb|
-  #   # Display the VirtualBox GUI when booting the machine
-  #   vb.gui = true
-  #
-  #   # Customize the amount of memory on the VM:
-  #   vb.memory = "1024"
-  # end
-
-  config.vm.provision "shell", path: "provision/script.sh"
-
-  # Enable provisioning with a shell script. Additional provisioners such as
-  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
-  # documentation for more information about their specific syntax and use.
-  # config.vm.provision "shell", inline: <<-SHELL
-  #   apt-get update
-  #   apt-get install -y apache2
-  # SHELL
+    os2.vm.provider :virtualbox do |v|
+      v.customize ["modifyvm", :id, "--natdnshostresolver2", "on"]
+      v.customize ["modifyvm", :id, "--memory", 1024]
+      v.customize ["modifyvm", :id, "--name", "os2"]
+    end
+  end
 end
+
